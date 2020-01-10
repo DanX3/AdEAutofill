@@ -1,53 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+  </head>
+  <link rel="stylesheet" href="icons/font-awesome/css/font-awesome.min.css" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<link rel="stylesheet" href="icons/font-awesome/css/font-awesome.min.css">
-
-<script>
-    function store(key) {
-        var value = document.getElementById(key).value;
-        storage.sync.set(JSON.parse(`{${key}:${value}}`));
-    }
-</script>
-
-<body>
-    <div style="width: 300px;" class="container-md m-4">
-        <h1>AdE AutoFill</h1>
-        <div class="form-group">
-            <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fa fa-envelope" aria-hidden="true"></i>
-                </div> <input type="text" class="form-control" id="email" placeholder="E-mail" onfocusout="store('email')">
-            </div>
+  <body>
+    <div class="container-lg mb-4">
+      <h1>AdE AutoFill</h1>
+      <div class="form-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            id="email"
+            placeholder="E-mail"
+          />
         </div>
+      </div>
 
-        <div class="form-group">
-            <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i>
-                </div> <input type="password" class="form-control" id="password" placeholder="Password">
-            </div>
+      <div class="form-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <i class="fa fa-key" aria-hidden="true"></i>
+          </div>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Password"
+          />
         </div>
+      </div>
 
-        <div class="form-group">
-            <div class="input-group-prepend">
-                <div class="input-group-text"><i class="fa fa-th" aria-hidden="true"></i>
-                </div> <input type="password" class="form-control" id="pin" placeholder="PIN">
-            </div>
+      <div class="form-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <i class="fa fa-th" aria-hidden="true"></i>
+          </div>
+          <input
+            type="password"
+            class="form-control"
+            id="pin"
+            placeholder="PIN"
+          />
         </div>
-        <button type="button" class="btn btn-primary" onclick="console.log('Hello');">OK</button>
-
+      </div>
+      <div class="row">
+        <div class="col">
+          <button type="button" id="btn-go" class="btn btn-outline-primary btn-block">Go to Ade</button>
+        </div>
+        <div class="col">
+          <button type="button" id="btn-autofill" class="btn btn-success btn-block">AutoFill</button>
+        </div>
+      </div>
     </div>
-    <script>
-        var email = storage.sync.get("email");
-        document.getElementById('email').value = email;
-    </script>
-</body>
-
+    <script src="popup.js"></script>
+  </body>
 </html>
