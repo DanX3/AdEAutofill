@@ -10,23 +10,37 @@
     },
     "permissions": [
         "activeTab",
-        "storage"
+        "storage",
+        "tabs",
+        "<all_urls>"
     ],
+    "icons": {
+        "16": "icons/icon_16.png",
+        "32": "icons/icon_32.png",
+        "48": "icons/icon_48.png",
+        "64": "icons/icon_64.png",
+        "128": "icons/icon_128.png"
+    },
     "browser_action": {
         "browser_style": true,
+        "default_title": "AdE Autofill",
         "default_popup": "popup.html",
         "default_icon": {
             "16": "icons/icon_16.png",
-            "32": "icons/icon_32.png",
-            "48": "icons/icon_32.png",
-            "64": "icons/icon_64.png",
+            "32": "icons/xterm.png",
+            "48": "icons/xterm-48.png",
+            "64": "icons/xterm-64.png",
             "128": "icons/icon_128.png"
         }
     },
     "content_scripts": [
         {
-            "matches": ["*://*.google.com/*"],
-            "js": ["content_script.js"]
+            "matches": [
+                "*://*.agenziaentrate.gov.it/*"
+            ],
+            "js": [
+                "content_script.js"
+            ]
         }
     ],
     "applications": {
