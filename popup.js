@@ -11,14 +11,6 @@ function listenForClicks() {
         console.log(data);
     }
 
-    document.addEventListener("click", (e) => {
-        if (e.target.id == "btn-autofill") {
-            email = document.getElementById("email").value;
-            browser.tabs.query({ active: true, currentWindow: true })
-                .then(sendMessage);
-        }
-    });
-
     document.addEventListener("input", (e) => {
         console.log("received input event");
         if (e.target.id == "email") {

@@ -12,7 +12,8 @@
         "activeTab",
         "storage",
         "tabs",
-        "<all_urls>"
+        "<all_urls>",
+        "http://localhost/*"
     ],
     "icons": {
         "16": "icons/icon_16.png",
@@ -25,13 +26,7 @@
         "browser_style": true,
         "default_title": "AdE Autofill",
         "default_popup": "popup.html",
-        "default_icon": {
-            "16": "icons/icon_16.png",
-            "32": "icons/xterm.png",
-            "48": "icons/xterm-48.png",
-            "64": "icons/xterm-64.png",
-            "128": "icons/icon_128.png"
-        }
+        "default_icon": "icons/icon_48.png"
     },
     "content_scripts": [
         {
@@ -39,6 +34,7 @@
                 "*://*.agenziaentrate.gov.it/*"
             ],
             "js": [
+                "jquery-3.4.1.min.js",
                 "content_script.js"
             ]
         }

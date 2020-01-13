@@ -4,6 +4,14 @@ function openPage() {
     });
 }
 
+// browser.runtime.onMessage.addListener((message) => {
+//     console.log("Called onMessage");
+    
+//     if (message["message"] == "fetch") {
+//         fetchData();
+//     }
+// });
+
 browser.browserAction.onClicked.addListener(openPage);
 
 
@@ -13,3 +21,4 @@ function printCurrentURL() {
             console.log(`Active tab has URL ${tabs[0].url}`)
         });
 }
+
