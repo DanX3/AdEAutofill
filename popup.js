@@ -4,12 +4,18 @@ function extractValue(data) {
     return data[Object.keys(data)[0]]
 }
 
+function sendMessage(message) {
+    browser.tabs.query({
+        currentWindow: true,
+        active: true
+    }).then((tabs) => {
+        console.log(data);
+        browser.tabs.sendMessage(tabs[0].id, message);
+    });
+}
+
 function listenForClicks() {
 
-    function sendMessage(tabs) {
-        browser.tabs.sendMessage(tabs[0].id, data);
-        console.log(data);
-    }
 
     document.addEventListener("input", (e) => {
         console.log("received input event");
@@ -37,6 +43,8 @@ function listenForClicks() {
     browser.storage.local.get(dom)
         .then((element) => {
             var value = element[Object.keys(element)[0]];
+            if (value === undefined)
+                return;
             data[`${dom}`] = value;
             document.getElementById(dom).value = value;
         });
@@ -52,13 +60,37 @@ browser.storage.local.get(("activated"))
 
 
 document.getElementById('btn-go').addEventListener('click', () => {
-    console.log("Hello Go To AdE")
     browser.tabs.create({
         active: true,
         url: "https://telematici.agenziaentrate.gov.it/Main/login.jsp"
     });
 });
 
+document.getElementById('btn-go-form').addEventListener('click', () => {
+    browser.storage.local.set({'go-form': true}, () => {
+        console.log("Set go-form to true");
+        
+        browser.tabs.query({
+            active: true,
+            currentWindow: true
+        }, (tabs) => {
+            browser.tabs.sendMessage(tabs[0].id, {action: "automate"});
+        });
+        // browser.tabs.query({
+        //     active: true,
+        //     url: "https://telematici.agenziaentrate.gov.it/Main/login.jsp"
+        // });
+    });
+})
+
+document.getElementById('btn-fill').addEventListener('click', () => {
+    console.log(document.URL);
+    sendMessage({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        pin: document.getElementById('pin').value,
+    })
+});
 
 browser.tabs.executeScript({ file: "/content_script.js" })
     .then(listenForClicks);

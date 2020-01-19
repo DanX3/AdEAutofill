@@ -47,7 +47,7 @@
 
                 for (var i = 0; i < data["voci"].length; i++) {
                     console.log(`i = ${i}`);
-                    
+
                     document.getElementById(`i2_2_1_r${i}`).value = '1,00';
                     document.getElementById(`i2_2_1_r${i}`).dispatchEvent(ie);
                     console.log(`${data["voci"][i]["nome"].toLowerCase()} - $${data["voci"][i]["prezzo"]}`)
@@ -61,7 +61,7 @@
 
                 for (var i = 0; i < data["voci"].length; i++) {
                     console.log(`i = ${i}`);
-                    
+
                     document.getElementsByClassName("btn-info").item(i).click();
                     var name = data["voci"][i]["nome"].toLowerCase();
                     await new Promise(r => setTimeout(r, 500));
@@ -80,6 +80,10 @@
                 }
 
             }, "json");
+        }
+
+        function isLoginURL() {
+            return document.URL.endsWith("login.jsp") || document.URL.endsWith("portale/");
         }
 
         function automate() {
@@ -112,10 +116,8 @@
                 if (URL.endsWith("portale/web/guest/home")) {
                     document.getElementsByClassName("link_spa").item(3).click();
                 } else if (document.getElementById("chiudi_informativa") != undefined) {
-                    console.log("Here");
                     document.getElementById("chiudi_informativa").click();
                 } else if (URL.includes("documenticommercialionline")) {
-                    console.log("Here instead");
                     new Promise(r => setTimeout(r, 500)).then(() => {
                         var maybelist = document.getElementsByClassName("mylist").item(0);
                         if (maybelist !== null) {
@@ -129,20 +131,52 @@
         }
 
         browser.runtime.onMessage.addListener((message) => {
-            document.getElementById('nome_utente_ar').value = message['email'];
-            document.getElementById('password_ar').value = message['password'];
-            document.getElementById('codicepin').value = message['pin'];
-            document.getElementById('bottoni_form').children[0].click();
-            background.printCurrentURL();
+            console.log(`Received ${message}`);
+            if (Object.keys(message).includes("action")) {
+                if (message['action'] == 'automate') {
+                    checkForAutomation();
+                }
+                return;
+            }
+            if (document.getElementById("nome_utente_ar") !== null) {
+                fillData_ar();
+            }
+
+            if (document.getElementById("username") !== null) {
+                fillData();
+            }
         });
 
-        browser.storage.local.get("activated")
-            .then((value) => {
-                var activated = extractValue(value);
-                if (activated) {
-                    automate();
-                }
-            });
+        browser.storage.local.get(("go-form"), (goform) => {
+            console.log(`go-form: ${extractValue(goform)}`);
+
+        })
+
+        function checkForAutomation() {
+            browser.storage.local.get("activated")
+                .then((value) => {
+                    var activated = extractValue(value);
+                    if (activated) {
+                        return automate();
+                    }
+
+                    browser.storage.local.get(("go-form"), (go_form) => {
+                        if (!extractValue(go_form))
+                            return;
+                        if (document.URL.includes("generazione/wizard")) {
+                            browser.storage.local.set({ "go-form": false });
+                        } else {
+                            console.log("Automating anyway");
+                            automate();
+                        }
+                    });
+
+                });
+        }
+
+        checkForAutomation();
+
+
 
         // browser.tabs.query({ active: true, currentWindow: true })
         //     .then((tab) => {
