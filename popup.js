@@ -46,7 +46,7 @@ function listenForClicks() {
 });
 
 
-document.getElementById('btn-go-form').addEventListener('click', () => {
+function go_form() {
   browser.storage.local.set({ 'go-form': true }, () => {
     console.log("Set go-form to true");
 
@@ -65,22 +65,13 @@ document.getElementById('btn-go-form').addEventListener('click', () => {
         });
       }
     }));
-
-
-    // browser.tabs.query({
-    //   active: true,
-    //   currentWindow: true
-    // }, (tabs) => {
-    //   browser.tabs.sendMessage(tabs[0].id, { action: "automate" });
-    // });
-    // browser.tabs.query({
-    //     active: true,
-    //     url: "https://telematici.agenziaentrate.gov.it/Main/login.jsp"
-    // });
   });
-});
+}
+
+document.getElementById('btn-go-form').addEventListener('click', go_form);
 
 document.getElementById('btn-fill-form').addEventListener('click', () => {
+  go_form();
   browser.tabs.query({
     active: true,
     currentWindow: true
@@ -90,8 +81,7 @@ document.getElementById('btn-fill-form').addEventListener('click', () => {
         "action": "fill-form"
       });
     } else {
-      // TODO
-      // Go to form and then fill
+      browser.storage.local.set({"fill-form": true});
     }
   });
 });

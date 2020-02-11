@@ -8,9 +8,15 @@
       return data[Object.keys(data)[0]]
     }
 
+    // The form requires a comma to separate the integer part and the mantissa
+    // JSON requires a dot
+    function commify(num) {
+      return num.toString().replace(".", ",");
+    }
+
     function clearForm() {
       console.log("Clearing form");
-      
+
       document.getElementById("i2_4_1").value = "";
       document.getElementById("i2_4_1").dispatchEvent(ie);
       document.getElementById("i2_4_2").value = "";
@@ -56,7 +62,7 @@
       document.getElementsByClassName("conferma").item(0).click();
     }
 
-    async function fillWizard() {
+    async function fillWizard(cb) {
       $.get('http://localhost:3000/api/readjson').done(async (jsonData) => {
         var data = JSON.parse(jsonData);
         console.log(data);
@@ -65,20 +71,28 @@
 
         await new Promise(r => setTimeout(r, 1000));
 
-        document.getElementById("i2_4_1").value = data["pagamento in contanti"];
+        // Cash
+        document.getElementById("i2_4_1").value = commify(data["pagamento in contanti"]);
         document.getElementById("i2_4_1").dispatchEvent(ie);
-        document.getElementById("i2_4_2").value = data["pagamento elettronico"];
+
+        // Card
+        document.getElementById("i2_4_2").value = commify(data["pagamento elettronico"]);
         document.getElementById("i2_4_2").dispatchEvent(ie);
 
         for (var i = 0; i < data["voci"].length; i++) {
           console.log(`i = ${i}`);
 
-          document.getElementById(`i2_2_1_r${i}`).value = '1,00';
+          // Quantity
+          document.getElementById(`i2_2_1_r${i}`).value = commify(1);
           document.getElementById(`i2_2_1_r${i}`).dispatchEvent(ie);
-          console.log(`${data["voci"][i]["nome"].toLowerCase()} - $${data["voci"][i]["prezzo"]}`)
-          document.getElementById(`i2_2_3_r${i}`).value = `${data["voci"][i]["prezzo"]}`;
+
+          // console.log(`${data["voci"][i]["nome"].toLowerCase()} - $${data["voci"][i]["prezzo"]}`)
+          // Price
+          document.getElementById(`i2_2_3_r${i}`).value = `${commify(data["voci"][i]["prezzo"])}`;
           document.getElementById(`i2_2_3_r${i}`).dispatchEvent(ie);
-          document.getElementById(`i2_2_4_r${i}`).value = discount;
+
+          // Discount
+          document.getElementById(`i2_2_4_r${i}`).value = commify(discount);
           document.getElementById(`i2_2_4_r${i}`).dispatchEvent(ie);
         }
 
@@ -111,10 +125,11 @@
         }
 
         for (var i = 0; i < data["voci"].length; i++) {
-          document.getElementById(`i2_2_3_r${i}`).value = `${data["voci"][i]["prezzo"]}`;
+          document.getElementById(`i2_2_3_r${i}`).value = `${commify(data["voci"][i]["prezzo"])}`;
           document.getElementById(`i2_2_3_r${i}`).dispatchEvent(ie);
         }
 
+        cb(true);
       }, "json");
     }
 
@@ -160,6 +175,7 @@
               console.log("maybe list != null");
               maybelist.children[0].children[0].click();
               browser.storage.local.set({ "go-form": false });
+              checkForAutomation();
             }
           });
         }
@@ -176,7 +192,7 @@
 
         if (message['action'] == 'fill-form') {
           console.log("Filling wizard");
-          return fillWizard();
+          return fillWizard(() => {});
         }
 
         if (message['action'] == 'clear-form') {
@@ -202,16 +218,26 @@
     })
 
     function checkForAutomation() {
+      if (document.URL.includes("generazione/wizard")) {
+        browser.storage.local.set({ "go-form": false });
+        browser.storage.local.get(("fill-form"), (fillform) => {
+          console.log(`storage fill-form: ${extractValue(fillform)}`);
+
+          if (extractValue(fillform)) {
+            fillWizard((success) => {
+              if (success)
+                browser.storage.local.set({ "fill-form": false });
+            });
+          }
+        });
+        return;
+      }
+
       browser.storage.local.get(("go-form"), (go_form) => {
         if (!extractValue(go_form))
           return;
-        if (document.URL.includes("generazione/wizard")) {
-          console.log("Disabling go-form");
-          browser.storage.local.set({ "go-form": false });
-        } else {
-          console.log("Automating anyway");
-          automate();
-        }
+        console.log("Automating anyway");
+        automate();
       });
     }
 
