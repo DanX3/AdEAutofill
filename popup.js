@@ -86,11 +86,11 @@ document.getElementById('btn-fill-form').addEventListener('click', () => {
   });
 });
 
-document.getElementById('btn-clear-form').addEventListener('click', () => {
-  sendMessage({
-    "action": "clear-form"
-  });
-});
+// document.getElementById('btn-clear-form').addEventListener('click', () => {
+//   sendMessage({
+//     "action": "clear-form"
+//   });
+// });
 
 
 // document.getElementById('btn-go').addEventListener('click', () => {
@@ -141,7 +141,6 @@ browser.tabs.executeScript({ file: "/content_script.js" })
   .then(listenForClicks);
 
 
-
 fetch("http://localhost:3000/api/readjson")
   .then((response) => {
     return response.json();
@@ -151,8 +150,10 @@ fetch("http://localhost:3000/api/readjson")
 
 fetch("http://localhost:3000/api/credentials")
   .then((response) => {
-    if (!response.ok)
+    if (!response.ok) {
       return;
+    }
+
     response.json().then((creds) => {
 
       console.log(JSON.stringify(creds));
