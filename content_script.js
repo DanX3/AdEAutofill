@@ -152,6 +152,8 @@
         //     document.getElementsByClassName("mylist").item(0).children[0].children[0].click()
       } else if (URL.endsWith("login.jsp")) {
         fillData_ar();
+      } else if (URL.endsWith("/portale/home")) {
+        fillData();
         // } else if (URL.includes("generazione/wizard")) {
         //   fillWizard();
       }
@@ -165,11 +167,12 @@
 
       if (URL.endsWith("home")) {
         if (URL.endsWith("portale/web/guest/home")) {
-          document.getElementsByClassName("link_spa").item(3).click();
+          // document.getElementsByClassName("link_spa").item(3).click();
+          document.getElementsByClassName("link_spa").item(4).click();
         } else if (document.getElementById("chiudi_informativa") != undefined) {
           document.getElementById("chiudi_informativa").click();
         } else if (URL.includes("documenticommercialionline")) {
-          new Promise(r => setTimeout(r, 500)).then(() => {
+          new Promise(r => setTimeout(r, 1000)).then(() => {
             var maybelist = document.getElementsByClassName("mylist").item(0);
             if (maybelist !== null) {
               console.log("maybe list != null");

@@ -61,7 +61,8 @@ function go_form() {
       } else {
         browser.tabs.create({
           active: true,
-          url: "https://telematici.agenziaentrate.gov.it/Main/login.jsp"
+          url: "https://ivaservizi.agenziaentrate.gov.it/portale/home"
+          // url: "https://telematici.agenziaentrate.gov.it/Main/login.jsp"
         });
       }
     }));
@@ -125,6 +126,23 @@ document.getElementById('btn-login').addEventListener('click', () => {
     currentWindow: true
   }, (tabs) => {
     if (tabs[0].url.includes("agenziaentrate.gov") && tabs[0].url.includes("login")) {
+      _fillLogin();
+    } else {
+      browser.storage.local.set({"login": true}, () => {
+        browser.tabs.create({
+          active: true,
+          url: "https://ivaservizi.agenziaentrate.gov.it/portale/home"
+          // url: "https://telematici.agenziaentrate.gov.it/Main/login.jsp"
+        });
+      })
+    }
+  });
+
+  browser.tabs.query({
+    active: true,
+    currentWindow: true,
+  }, (tabs) => {
+    if (tabs[0].url.includes("agenziaentrate.gov") && tabs[0].url.includes("portale")) {
       _fillLogin();
     } else {
       browser.storage.local.set({"login": true}, () => {
